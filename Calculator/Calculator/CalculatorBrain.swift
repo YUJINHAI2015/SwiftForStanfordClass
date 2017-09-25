@@ -34,13 +34,20 @@ struct CalculatorBrain {
 //            break
 //        }
 //    }
-    private var operations: Dictionary<String,Double> = [
-        "𝞹": Double.pi,
-        "e": M_E,
+    private enum Operation {
+        case constant // 常量
+        case unaryOperation // 函数
+    }
+    // 字典里面如何放两种类型参数呢？用enum
+    private var operations: Dictionary<String,Operation> = [
+        "𝞹" : Operation.constant, //Double.pi,
+        "e" : Operation.constant, //M_E,
+        "√" : Operation.unaryOperation, // sqrt
+        "cos" : Operation.unaryOperation // cos
     ]
     mutating func performOperation(_ symbol: String) {
-        if let constant = operations[symbol] {
-            accumulator = constant
+        if let operation = operations[symbol] {
+
         }
     }
     // 因为struct是通过拷贝传值的，如果要改变他的变量，要显示的告诉他，添加mutating.

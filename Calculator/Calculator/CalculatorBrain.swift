@@ -34,20 +34,36 @@ struct CalculatorBrain {
 //            break
 //        }
 //    }
+    
+//    private enum Operation {
+//        case constant // 常量
+//        case unaryOperation // 函数
+//    }
+    // 关联值：类似于可选类型。可选类型有两种状态，1、没有值，返回nil 2、有值，返回该值
+    // 函数可以作为关联值，局部变量，参数等等
     private enum Operation {
-        case constant // 常量
-        case unaryOperation // 函数
+        case constant(Double) // 常量
+        case unaryOperation((Double) ->Double) // 函数
     }
+
     // 字典里面如何放两种类型参数呢？用enum
     private var operations: Dictionary<String,Operation> = [
-        "𝞹" : Operation.constant, //Double.pi,
-        "e" : Operation.constant, //M_E,
-        "√" : Operation.unaryOperation, // sqrt
-        "cos" : Operation.unaryOperation // cos
+        "𝞹" : Operation.constant(Double.pi), //Double.pi,
+        "e" : Operation.constant(M_E), //M_E,
+        "√" : Operation.unaryOperation(sqrt), // sqrt
+        "cos" : Operation.unaryOperation(cos) // cos
     ]
     mutating func performOperation(_ symbol: String) {
         if let operation = operations[symbol] {
-
+            switch operation {
+            case .constant(let value):
+                accumulator = value
+            case .unaryOperation(let function):
+                if accumulator != nil {
+                    accumulator = function(accumulator!)
+                }
+                break
+            }
         }
     }
     // 因为struct是通过拷贝传值的，如果要改变他的变量，要显示的告诉他，添加mutating.

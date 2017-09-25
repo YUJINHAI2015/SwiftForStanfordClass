@@ -24,9 +24,6 @@ class ViewController: UIViewController {
             userIsInTheMiddleOfTyping = true
         }
         
-        print("\(digit) was called")
-        
-//        let textCurrentlyInDisplay = disp
         // let and var 区别
         // 一般上不需要赋值的建议使用let,代表常量。
         // 像数组，swift传递数组没有传递指针的概念，都是通过拷贝传递，使用let数组，swift有一套自己的拷贝机制，并不会每次都拷贝，只有在赋值的时候才会拷贝。而如果是使用var数组，swift则每次传递都会拷贝。

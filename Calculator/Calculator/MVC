@@ -1,0 +1,16 @@
+
+          Controller（控制器）
+
+
+Model（数据）                        View（界面）
+
+
+1、控制器可以直接访问数据
+2、控制器通过outlet访问界面
+3、数据和界面是不能通讯
+4、界面通过target-action和控制器交互
+5、界面通过delegate、DataSource和控制器交互
+6、model通过notification&KVO和控制器交互
+7、model可以给多个控制器使用
+
+

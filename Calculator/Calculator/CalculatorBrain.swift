@@ -22,8 +22,18 @@ struct CalculatorBrain {
     
     private var accumulator: Double? // 不需要赋值，struct会有一个自动的构造器,这里用可选值，是因为不想初始值里面用数据
     
-    func performOperation(_ symbol: String) {
-        
+    mutating func performOperation(_ symbol: String) {
+        switch symbol{
+        case "𝞹":
+            accumulator = Double.pi // 修改私有变量也要用mutating
+        case "√":
+            if let operand = accumulator {
+                accumulator = sqrt(operand)
+            }
+        default:
+            break
+        }
+
         
     }
     // 因为struct是通过拷贝传值的，如果要改变他的变量，要显示的告诉他，添加mutating.

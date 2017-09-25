@@ -17,9 +17,11 @@ class ViewController: UIViewController {
     @IBAction func touchDigit(_ sender: UIButton) {
         let digit = sender.currentTitle!
         if userIsInTheMiddleOfTyping {
+            // 其他次进入
             let textCurrentlyInDisplay = display.text!
             display.text = textCurrentlyInDisplay + digit
         } else {
+            // 第一次进入
             display.text = digit
             userIsInTheMiddleOfTyping = true
         }
@@ -31,7 +33,7 @@ class ViewController: UIViewController {
         // optional --- {nil, value}
         // ! 加上！ 就是隐式解析 --- value (隐式解析得到可选类型里面的值，注意如果可选类型是nil,就会奔溃)
     }
-    // 计算型属性
+    // 计算型属性 属性转换
     var displayValue: Double {
         get {
             return Double(display.text!)!
@@ -40,18 +42,23 @@ class ViewController: UIViewController {
             display.text = String(newValue)
         }
     }
+    // 把计算模块逻辑放到model层
+    private var brain = CalculatorBrain()
     
     @IBAction func performOperation(_ sender: UIButton) {
-        if let mathematicalSymbol = sender.currentTitle {
+
+        // 放操作数
+        if userIsInTheMiddleOfTyping {
+            brain.setOperand(displayValue)
             userIsInTheMiddleOfTyping = false
-            switch mathematicalSymbol{
-            case "𝞹":
-                displayValue = Double.pi
-            case "√":
-                displayValue = sqrt(displayValue)
-            default:
-                break
-            }
+        }
+        // 放操作符 +/*\
+        if let mathematicalSymbol = sender.currentTitle {
+            brain.performOperation(mathematicalSymbol)
+        }
+        // 返回结果 可选类型
+        if let result = brain.result {
+            displayValue = result
         }
     }
 }

@@ -17,6 +17,9 @@ import Foundation
  */
 
 // 点开assistant editor  按住alt + 点击需要打开的文件
+func add(one: Double, two: Double) -> Double {
+    return one + two
+}
 
 struct CalculatorBrain {
     
@@ -43,15 +46,20 @@ struct CalculatorBrain {
     // 函数可以作为关联值，局部变量，参数等等
     private enum Operation {
         case constant(Double) // 常量
-        case unaryOperation((Double) ->Double) // 函数
+        case unaryOperation((Double) -> Double) // 函数
+        case binaryOperation((Double, Double) -> Double)
+        case equals
     }
 
+    
     // 字典里面如何放两种类型参数呢？用enum
     private var operations: Dictionary<String,Operation> = [
         "𝞹" : Operation.constant(Double.pi), //Double.pi,
         "e" : Operation.constant(M_E), //M_E,
         "√" : Operation.unaryOperation(sqrt), // sqrt
-        "cos" : Operation.unaryOperation(cos) // cos
+        "cos" : Operation.unaryOperation(cos), // cos
+        "+" : Operation.binaryOperation(add),
+        "=" : Operation.equals
     ]
     mutating func performOperation(_ symbol: String) {
         if let operation = operations[symbol] {
@@ -62,10 +70,31 @@ struct CalculatorBrain {
                 if accumulator != nil {
                     accumulator = function(accumulator!)
                 }
-                break
+                
+            case .binaryOperation(let function):
+                if accumulator != nil {
+                    pendingBinaryOperation = PendingBinaryOperation(function: function, firstOperation: accumulator!)
+                    accumulator = nil
+                }
+            case .equals:
+                performPendingBinaryOperation()
             }
         }
     }
+    mutating private func performPendingBinaryOperation() {
+        if pendingBinaryOperation != nil && accumulator != nil {
+            accumulator = pendingBinaryOperation!.perform(with: accumulator!)
+            pendingBinaryOperation = nil
+        }
+    }
+    private struct PendingBinaryOperation {
+        let function: (Double, Double)->Double
+        let firstOperation: Double
+        func perform(with secondOperand: Double) -> Double {
+            return function(firstOperation, secondOperand)
+        }
+    }
+    private var pendingBinaryOperation: PendingBinaryOperation?
     // 因为struct是通过拷贝传值的，如果要改变他的变量，要显示的告诉他，添加mutating.
     mutating func setOperand(_ operand: Double) {
         accumulator = operand

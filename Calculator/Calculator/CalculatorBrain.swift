@@ -17,9 +17,6 @@ import Foundation
  */
 
 // 点开assistant editor  按住alt + 点击需要打开的文件
-func add(one: Double, two: Double) -> Double {
-    return one + two
-}
 
 struct CalculatorBrain {
     
@@ -50,15 +47,16 @@ struct CalculatorBrain {
         case binaryOperation((Double, Double) -> Double)
         case equals
     }
-
-    
     // 字典里面如何放两种类型参数呢？用enum
     private var operations: Dictionary<String,Operation> = [
         "𝞹" : Operation.constant(Double.pi), //Double.pi,
         "e" : Operation.constant(M_E), //M_E,
         "√" : Operation.unaryOperation(sqrt), // sqrt
         "cos" : Operation.unaryOperation(cos), // cos
-        "+" : Operation.binaryOperation(add),
+        "+" : Operation.binaryOperation({ $0 + $1 }), // 闭包
+        "-" : Operation.binaryOperation({ $0 - $1 }),
+        "*" : Operation.binaryOperation({ $0 * $1 }),
+        "/" : Operation.binaryOperation({ $0 / $1 }),
         "=" : Operation.equals
     ]
     mutating func performOperation(_ symbol: String) {
